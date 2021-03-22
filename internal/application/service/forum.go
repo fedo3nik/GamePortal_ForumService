@@ -5,6 +5,8 @@ import (
 	"log"
 	"strconv"
 
+	service "github.com/fedo3nik/GamePortal_ForumService/internal/application"
+
 	"github.com/fedo3nik/GamePortal_ForumService/internal/domain/entities"
 	"github.com/fedo3nik/GamePortal_ForumService/internal/infrastructure/database/postgres"
 	e "github.com/fedo3nik/GamePortal_ForumService/internal/util/error"
@@ -24,14 +26,17 @@ type ForumService struct {
 }
 
 func (f ForumService) AddForum(ctx context.Context, title, topic, text, token string) (*entities.Forum, error) {
-	var forum entities.Forum
+	userID, err := service.ValidateAccessToken(token, f.AccessKey)
+	if err != nil {
+		return nil, err
+	}
 
-	_ = token
+	var forum entities.Forum
 
 	forum.Title = title
 	forum.Topic = topic
 	forum.Text = text
-	forum.UserID = "exampleId"
+	forum.UserID = userID
 
 	id, err := postgres.InsertForum(ctx, f.Pool, &forum)
 	if err != nil {
