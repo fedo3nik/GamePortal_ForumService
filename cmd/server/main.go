@@ -28,7 +28,7 @@ func main() {
 
 	defer pool.Close()
 
-	grpcConn, err := grpc.Dial(c.GrpcPort, grpc.WithInsecure())
+	grpcConn, err := grpc.Dial(c.Grpc, grpc.WithInsecure())
 	if err != nil {
 		log.Panicf("Grpc connection error: %v", err)
 	}
